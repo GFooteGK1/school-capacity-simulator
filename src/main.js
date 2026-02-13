@@ -292,8 +292,10 @@ function onWindowBlur() {
 // ============================================================
 // ROLE GRID (for single placement)
 // ============================================================
+const SINGLE_ROLES = ['Teacher', 'Student'];
+
 function buildRoleGrid() {
-  $('roleGrid').innerHTML = ROLES.map((r) =>
+  $('roleGrid').innerHTML = SINGLE_ROLES.map((r) =>
     `<button class="role-chip ${r === selectedRole ? 'active' : ''}" data-role="${r}">
       <span>${ROLE_ICONS[r]}</span><span style="font-size:11px">${r}</span>
     </button>`

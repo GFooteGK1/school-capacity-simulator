@@ -68,9 +68,9 @@
   <!-- SIDE PANEL -->
   <aside class="panel" id="panel">
 
-    <!-- LOAD SCAN -->
+    <!-- 1. SCHOOL LOCATION -->
     <div class="section">
-      <h3 class="section-title">Load Scan</h3>
+      <h3 class="section-title">School Location</h3>
       <select class="role-select-main" id="scanSelect">
         <!-- Populated dynamically from AVAILABLE_SCANS -->
       </select>
@@ -81,7 +81,50 @@
       </details>
     </div>
 
-    <!-- BULK ADD -->
+    <!-- 2. TIPS -->
+    <div class="help-box" style="margin:0;border-radius:0;border-left:none;border-right:none;">
+      <p class="help-title">💡 Tips</p>
+      <p class="help-text">
+        • People are anchored in 3D space — they stay in place as you navigate<br>
+        • Draw a shape to scatter people inside it<br>
+        • Click a figure to adjust its individual scale<br>
+        • Right-click any figure to remove it<br>
+        • Set Perspective to 0% for dollhouse/floorplan views
+      </p>
+    </div>
+
+    <!-- 3. CAPACITY LIMIT -->
+    <div class="section">
+      <div class="capacity-row">
+        <h3 class="section-title" style="margin-bottom:0">Capacity Limit</h3>
+        <input class="limit-input" id="limitInput" type="number" value="50" min="1">
+      </div>
+    </div>
+
+    <!-- 4. PLACE INDIVIDUAL -->
+    <div class="section">
+      <h3 class="section-title">Place Individual</h3>
+      <div class="role-grid" id="roleGrid"></div>
+      <button class="place-single-btn" id="placeSingleBtn">👤 Place One Person</button>
+    </div>
+
+    <!-- 5. FIGURE SIZE -->
+    <div class="section">
+      <h3 class="section-title">Figure Size</h3>
+      <div class="size-row">
+        <label class="size-label">Size</label>
+        <input type="range" id="figureSize" min="16" max="200" value="60" class="size-slider">
+        <span class="size-val" id="sizeVal">60px</span>
+      </div>
+      <div class="size-row" style="margin-top: 8px;">
+        <label class="size-label">Perspective</label>
+        <input type="range" id="perspectiveSlider" min="0" max="100" value="70" class="size-slider">
+        <span class="size-val" id="perspectiveVal">70%</span>
+      </div>
+      <p class="hint-text">Scales figures by depth — closer figures appear larger. Set to 0% for flat views like dollhouse.</p>
+    </div>
+
+    <!-- 6. ADD PEOPLE (BULK) -->
     <div class="section">
       <h3 class="section-title">Add People</h3>
       <div class="bulk-row">
@@ -101,44 +144,12 @@
       <p class="hint-text">Draw a freehand shape around the area where people should go. They'll scatter naturally inside the shape you draw.</p>
     </div>
 
-    <!-- SINGLE ADD -->
-    <div class="section">
-      <h3 class="section-title">Place Individual</h3>
-      <div class="role-grid" id="roleGrid"></div>
-      <button class="place-single-btn" id="placeSingleBtn">👤 Place One Person</button>
-    </div>
-
-    <!-- CAPACITY -->
-    <div class="section">
-      <div class="capacity-row">
-        <h3 class="section-title" style="margin-bottom:0">Capacity Limit</h3>
-        <input class="limit-input" id="limitInput" type="number" value="50" min="1">
-      </div>
-    </div>
-
-    <!-- FIGURE SIZE -->
-    <div class="section">
-      <h3 class="section-title">Figure Size</h3>
-      <div class="size-row">
-        <label class="size-label">Size</label>
-        <input type="range" id="figureSize" min="16" max="200" value="60" class="size-slider">
-        <span class="size-val" id="sizeVal">60px</span>
-      </div>
-      <div class="size-row" style="margin-top: 8px;">
-        <label class="size-label">Perspective</label>
-        <input type="range" id="perspectiveSlider" min="0" max="100" value="70" class="size-slider">
-        <span class="size-val" id="perspectiveVal">70%</span>
-      </div>
-      <p class="hint-text">Scales figures by depth — closer figures appear larger. Set to 0% for flat views like dollhouse.</p>
-    </div>
-
     <!-- PEOPLE LIST -->
     <div class="section">
       <div class="people-count-row">
         <h3 class="section-title" style="margin-bottom:0" id="peopleTitle">People (0)</h3>
         <div class="people-actions">
           <button class="icon-action-btn" id="exportBtn" title="Export JSON">📋</button>
-          <button class="icon-action-btn danger" id="clearBtn" title="Clear All">🗑</button>
         </div>
       </div>
       <div class="role-summary" id="roleSummary"></div>
@@ -147,16 +158,11 @@
       </div>
     </div>
 
-    <div class="help-box">
-      <p class="help-title">💡 Tips</p>
-      <p class="help-text">
-        • People are anchored in 3D space — they stay in place as you navigate<br>
-        • Draw a shape to scatter people inside it<br>
-        • Click a figure to adjust its individual scale<br>
-        • Right-click any figure to remove it<br>
-        • Set Perspective to 0% for dollhouse/floorplan views
-      </p>
+    <!-- CLEAR ALL -->
+    <div class="section">
+      <button class="clear-btn" id="clearBtn">🗑 Clear All</button>
     </div>
+
   </aside>
 </div>
 

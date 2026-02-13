@@ -294,6 +294,15 @@ body {
 .icon-action-btn:hover { background: rgba(255,255,255,0.08); }
 .icon-action-btn.danger:hover { background: rgba(232,93,58,0.15); }
 
+.clear-btn {
+  width: 100%; padding: 9px;
+  background: rgba(232,93,58,0.08); border: 1px solid rgba(232,93,58,0.15);
+  border-radius: 8px; color: rgba(232,93,58,0.7);
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.clear-btn:hover { background: rgba(232,93,58,0.15); }
+
 /* ---- MISC ---- */
 .help-box {
   margin: 16px; padding: 14px;
