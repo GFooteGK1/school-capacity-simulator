@@ -11,6 +11,7 @@ const ROLE_SIZE_MULTIPLIER = {
 
 let manifest = null;   // { role: [filename, ...] }
 let ready = false;
+const BASE = import.meta.env.BASE_URL || '/';
 
 /**
  * Fetch manifest.json and preload all photo assets.
@@ -18,7 +19,7 @@ let ready = false;
  */
 export async function initPhotoAssets() {
   try {
-    const res = await fetch('/people/manifest.json');
+    const res = await fetch(`${BASE}people/manifest.json`);
     if (!res.ok) throw new Error(`manifest.json ${res.status}`);
     manifest = await res.json();
 
@@ -27,7 +28,7 @@ export async function initPhotoAssets() {
     for (const [role, files] of Object.entries(manifest)) {
       for (const file of files) {
         const img = new Image();
-        img.src = `/people/${role}/${file}`;
+        img.src = `${BASE}people/${role}/${file}`;
         preloads.push(new Promise((resolve) => {
           img.onload = resolve;
           img.onerror = resolve; // don't block on missing images
@@ -68,7 +69,7 @@ export function generatePhotoHTML(role = 'Other', options = {}) {
   const poseIndex = options.poseIndex ?? 0;
   const imageIndex = poseIndex % files.length;
   const file = files[imageIndex];
-  const src = `/people/${roleKey}/${file}`;
+  const src = `${BASE}people/${roleKey}/${file}`;
 
   const flip = options.flip ? 'transform: scaleX(-1);' : '';
 
