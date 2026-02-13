@@ -245,8 +245,9 @@ function onWindowBlur() {
   const floorIndex = intersection.floorIndex;
 
   addSinglePerson3D(anchor, floorIndex);
-  cancelPlacement();
-  // Refocus parent so user can interact with UI
+  // Stay in single placement mode — user can keep clicking to place more
+  $('placementText').innerHTML = `Placed! Keep clicking to place more <strong>${selectedRole}s</strong>. Press Cancel to stop.`;
+  // Refocus parent so next iframe click triggers another blur
   setTimeout(() => window.focus(), 50);
 }
 
@@ -361,7 +362,8 @@ function onZoneMouseDown(e) {
     const px = x / rect.width;
     const py = y / rect.height;
     addSinglePersonLegacy(px, py);
-    cancelPlacement();
+    // Stay in single placement mode — user can keep clicking
+    $('placementText').innerHTML = `Placed! Keep clicking to place more <strong>${selectedRole}s</strong>. Press Cancel to stop.`;
     return;
   }
 
