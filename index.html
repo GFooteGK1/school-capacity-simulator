@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Capacity Simulator — Matterport Occupancy Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo-mark">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="8" r="3.5" stroke="#E85D3A" stroke-width="1.5" fill="none"/>
+        <path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="#E85D3A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-title">School Capacity Simulator</div>
+      <div class="header-sub" id="statusText">Loading Matterport scan...</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="occupancy-badge">
+      <div class="occ-bar-track"><div class="occ-bar-fill" id="occBar"></div></div>
+      <span class="occ-text" id="occText">0/25</span>
+    </div>
+    <button class="panel-toggle" id="panelToggle">✕</button>
+  </div>
+</header>
+
+<div class="app-body">
+  <!-- VIEWPORT -->
+  <div class="viewport" id="viewport">
+    <iframe id="mpIframe" allow="fullscreen; xr-spatial-tracking" allowfullscreen></iframe>
+
+    <!-- Zone selection overlay — user draws a rectangle -->
+    <canvas id="zoneCanvas"></canvas>
+
+    <!-- People figures layer — uses percentage positioning -->
+    <div class="figures-layer" id="figuresLayer"></div>
+
+    <!-- Placement banner -->
+    <div class="placement-banner" id="placementBanner">
+      <span class="placement-dot"></span>
+      <span id="placementText">Click and drag to define the area</span>
+      <button class="cancel-btn" id="cancelBtn">Cancel</button>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar" id="statsBar"></div>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <aside class="panel" id="panel">
+
+    <!-- LOAD SCAN -->
+    <div class="section">
+      <h3 class="section-title">Load Scan</h3>
+      <select class="role-select-main" id="scanSelect">
+        <!-- Populated dynamically from AVAILABLE_SCANS -->
+      </select>
+      <button class="load-btn" id="loadScanBtn">🔄 Load Selected Scan</button>
+      <details style="margin-top: 12px;">
+        <summary style="cursor: pointer; font-size: 12px; color: #666; margin-bottom: 8px;">Or enter custom SID</summary>
+        <input class="name-input" id="modelInput" placeholder="Model SID (e.g. hvvUfPkLBME)" style="margin-bottom: 6px;">
+        <button class="load-btn" id="loadModelBtn">🔄 Load Custom</button>
+      </details>
+    </div>
+
+    <!-- BULK ADD -->
+    <div class="section">
+      <h3 class="section-title">Add People</h3>
+      <div class="bulk-row">
+        <input class="count-input" id="countInput" type="number" value="10" min="1" max="200" placeholder="#">
+        <select class="role-select-main" id="roleSelect">
+          <option value="Student">🎒 Students</option>
+          <option value="Teacher">📚 Teachers</option>
+          <option value="Mixed">🎲 Mixed</option>
+        </select>
+      </div>
+      <button class="place-btn" id="placeBtn">📍 Select Area & Place</button>
+      <p class="hint-text">Draw a freehand shape around the area where people should go. They'll scatter naturally inside the shape you draw.</p>
+    </div>
+
+    <!-- SINGLE ADD -->
+    <div class="section">
+      <h3 class="section-title">Place Individual</h3>
+      <input class="name-input" id="nameInput" placeholder="Name (optional)">
+      <div class="role-grid" id="roleGrid"></div>
+      <button class="place-single-btn" id="placeSingleBtn">👤 Place One Person</button>
+    </div>
+
+    <!-- CAPACITY -->
+    <div class="section">
+      <div class="capacity-row">
+        <h3 class="section-title" style="margin-bottom:0">Capacity Limit</h3>
+        <input class="limit-input" id="limitInput" type="number" value="50" min="1">
+      </div>
+    </div>
+
+    <!-- FIGURE STYLE -->
+    <div class="section">
+      <h3 class="section-title">Figure Style</h3>
+      <div class="style-options">
+        <button class="style-btn" data-style="photo">Photo</button>
+        <button class="style-btn active" data-style="silhouette">Silhouettes</button>
+        <button class="style-btn" data-style="icon">Icons</button>
+        <button class="style-btn" data-style="dot">Dots</button>
+      </div>
+      <div class="size-row">
+        <label class="size-label">Size</label>
+        <input type="range" id="figureSize" min="16" max="80" value="40" class="size-slider">
+        <span class="size-val" id="sizeVal">40px</span>
+      </div>
+    </div>
+
+    <!-- PEOPLE LIST -->
+    <div class="section">
+      <h3 class="section-title" id="peopleTitle">People (0)</h3>
+      <div class="role-summary" id="roleSummary"></div>
+      <div class="people-list" id="peopleList">
+        <p class="empty-text">No one placed yet.</p>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="section action-btns">
+      <button class="export-btn" id="exportBtn">📋 Export JSON</button>
+      <button class="clear-btn" id="clearBtn">🗑 Clear All</button>
+    </div>
+
+    <div class="help-box">
+      <p class="help-title">💡 Tips</p>
+      <p class="help-text">
+        • People are anchored in 3D space — they stay in place as you navigate<br>
+        • Click two corners for bulk placement (SDK mode)<br>
+        • People scale with the figure size slider<br>
+        • Right-click any figure to remove it<br>
+        • Export JSON for reporting & capacity docs
+      </p>
+    </div>
+  </aside>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script type="module" src="/src/people-figures.js"></script>
+<script type="module" src="/src/people-photos.js"></script>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

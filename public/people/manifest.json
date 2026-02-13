@@ -1,0 +1,27 @@
+{
+  "student": [
+    "student_01.png",
+    "student_02.png",
+    "student_03.png",
+    "student_04.png",
+    "student_05.png",
+    "student_06.png",
+    "kid_01.png",
+    "kid_02.png",
+    "kid_03.png",
+    "kid_04.png",
+    "kid_05.png",
+    "kid_06.png",
+    "kid_07.png"
+  ],
+  "teacher": [
+    "teacher_01.png",
+    "admin_01.png",
+    "staff_01.png",
+    "staff_02.png",
+    "staff_03.png",
+    "staff_04.png",
+    "staff_05.png",
+    "visitor_01.png"
+  ]
+}
