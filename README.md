@@ -49,8 +49,8 @@ Opens at `http://localhost:3000` with your Matterport scan loaded.
 Credentials are in `.env`:
 
 ```env
-VITE_MATTERPORT_SDK_KEY=4pg12mmsm62sf2m553p6sfnnd
-VITE_MATTERPORT_MODEL_SID=hvvUfPkLBME
+VITE_MATTERPORT_SDK_KEY=your_sdk_key_here
+VITE_MATTERPORT_MODEL_SID=your_model_sid_here
 ```
 
 ### Finding Your Model SID
