@@ -63,7 +63,6 @@
       <select class="role-select-main" id="scanSelect">
         <!-- Populated dynamically from AVAILABLE_SCANS -->
       </select>
-      <button class="load-btn" id="loadScanBtn">🔄 Load Selected Scan</button>
       <details style="margin-top: 12px;">
         <summary style="cursor: pointer; font-size: 12px; color: #666; margin-bottom: 8px;">Or enter custom SID</summary>
         <input class="name-input" id="modelInput" placeholder="Model SID (e.g. hvvUfPkLBME)" style="margin-bottom: 6px;">
@@ -89,7 +88,6 @@
     <!-- SINGLE ADD -->
     <div class="section">
       <h3 class="section-title">Place Individual</h3>
-      <input class="name-input" id="nameInput" placeholder="Name (optional)">
       <div class="role-grid" id="roleGrid"></div>
       <button class="place-single-btn" id="placeSingleBtn">👤 Place One Person</button>
     </div>
@@ -102,15 +100,9 @@
       </div>
     </div>
 
-    <!-- FIGURE STYLE -->
+    <!-- FIGURE SIZE -->
     <div class="section">
-      <h3 class="section-title">Figure Style</h3>
-      <div class="style-options">
-        <button class="style-btn" data-style="photo">Photo</button>
-        <button class="style-btn active" data-style="silhouette">Silhouettes</button>
-        <button class="style-btn" data-style="icon">Icons</button>
-        <button class="style-btn" data-style="dot">Dots</button>
-      </div>
+      <h3 class="section-title">Figure Size</h3>
       <div class="size-row">
         <label class="size-label">Size</label>
         <input type="range" id="figureSize" min="16" max="80" value="40" class="size-slider">

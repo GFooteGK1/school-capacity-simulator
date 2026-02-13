@@ -36,7 +36,7 @@ const MIXED_WEIGHTS = { Student: 0.75, Teacher: 0.25 };
 // STATE
 // ============================================================
 let people = [];
-let figureStyle = 'silhouette'; // silhouette | icon | dot | photo
+let figureStyle = 'photo';
 let figureSize = 40;
 let selectedRole = 'Student';
 let placementMode = null; // null | 'bulk' | 'single'
@@ -74,8 +74,7 @@ async function init() {
 
   // Load photo assets in background — non-blocking
   await initPhotoAssets();
-  // Re-render if user already selected photo mode before assets loaded
-  if (figureStyle === 'photo') renderFigures();
+  renderFigures();
 }
 
 // ============================================================
@@ -165,8 +164,8 @@ function bindEvents() {
   $('exportBtn').addEventListener('click', exportJSON);
   $('limitInput').addEventListener('change', () => { updateOccupancy(); saveState(); });
 
-  // Load scan from dropdown
-  $('loadScanBtn').addEventListener('click', async () => {
+  // Load scan on dropdown selection
+  $('scanSelect').addEventListener('change', async () => {
     const sid = $('scanSelect').value;
     const scanLabel = AVAILABLE_SCANS.find(s => s.sid === sid)?.label || sid;
     if (sid) {
@@ -175,7 +174,6 @@ function bindEvents() {
       }
       CONFIG.MODEL_SID = sid;
       await loadMatterportScan(sid);
-      // Trigger re-render for any SDK-anchored figures
       if (sdkReady) schedulePositionUpdate();
       showToast(`Loading ${scanLabel}...`);
     }
@@ -192,21 +190,7 @@ function bindEvents() {
     }
   });
 
-  // Name input enter → single place
-  $('nameInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') startSinglePlacement();
-  });
-
-  // Figure style buttons
-  document.querySelectorAll('.style-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.style-btn').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      figureStyle = btn.dataset.style;
-      renderFigures();
-      saveState();
-    });
-  });
+  // Figure size slider
 
   // Figure size slider
   $('figureSize').addEventListener('input', (e) => {
@@ -303,16 +287,15 @@ function startBulkPlacement() {
 function startSinglePlacement() {
   if (placementMode === 'single') { cancelPlacement(); return; }
   placementMode = 'single';
-  const name = $('nameInput').value.trim() || 'a person';
 
   if (sdkReady) {
     // SDK mode: click on the 3D model
-    $('placementText').innerHTML = `Click on the model to place <strong>${name}</strong> (${selectedRole})`;
+    $('placementText').innerHTML = `Click on the model to place a <strong>${selectedRole}</strong>`;
     $('placementBanner').classList.add('active');
     // Don't show canvas — let clicks pass to iframe
   } else {
     // Legacy: click on canvas overlay
-    $('placementText').innerHTML = `Click to place <strong>${name}</strong> (${selectedRole})`;
+    $('placementText').innerHTML = `Click to place a <strong>${selectedRole}</strong>`;
     $('placementBanner').classList.add('active');
     $('zoneCanvas').classList.add('active');
     resizeCanvas();
@@ -468,7 +451,7 @@ function pointInPolygon(px, py, polygon) {
 // ADD PEOPLE — SDK 3D mode
 // ============================================================
 function addSinglePerson3D(anchor, floorIndex) {
-  const name = $('nameInput').value.trim() || `Person ${nextId}`;
+  const name = `${selectedRole} ${nextId}`;
   people.push({
     id: nextId++,
     name,
@@ -480,7 +463,6 @@ function addSinglePerson3D(anchor, floorIndex) {
     flip: Math.random() > 0.5,
     timestamp: new Date().toISOString(),
   });
-  $('nameInput').value = '';
   renderAll();
   saveState();
   showToast(`Placed ${name} in 3D`);
@@ -531,7 +513,7 @@ function addBulkPeople3D(count, role, corner1, corner2, floorIndex) {
 // ADD PEOPLE — Legacy 2D mode (canvas click / lasso)
 // ============================================================
 function addSinglePersonLegacy(px, py) {
-  const name = $('nameInput').value.trim() || `Person ${nextId}`;
+  const name = `${selectedRole} ${nextId}`;
   people.push({
     id: nextId++,
     name,
@@ -543,7 +525,6 @@ function addSinglePersonLegacy(px, py) {
     flip: Math.random() > 0.5,
     timestamp: new Date().toISOString(),
   });
-  $('nameInput').value = '';
   renderAll();
   saveState();
   showToast(`Placed ${name}`);
@@ -971,13 +952,7 @@ function loadState() {
     }
     const limit = localStorage.getItem('pp_limit');
     if (limit) $('limitInput').value = limit;
-    const style = localStorage.getItem('pp_style');
-    if (style) {
-      figureStyle = style;
-      document.querySelectorAll('.style-btn').forEach((b) => {
-        b.classList.toggle('active', b.dataset.style === style);
-      });
-    }
+    // figureStyle is always 'photo' now
     const size = localStorage.getItem('pp_size');
     if (size) {
       figureSize = parseInt(size);
